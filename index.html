@@ -513,7 +513,23 @@
   <body>
     <div class="container">
       <h1>Čudloprd</h1>
-      <p class="subtitle">Sestav si svůj vysněný model a rezervuj si zkušební jízdu</p>
+      <p class="subtitle">
+        Sestav si svůj vysněný model a rezervuj si zkušební jízdu
+        <span
+          style="
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+          "
+          onclick="toggleMusic()"
+          id="musicToggle"
+          >🔇</span
+        >
+      </p>
+      <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 
       <div class="config-wrap">
         <div class="left-col">
@@ -621,7 +637,7 @@
     <div class="toast" id="toast"></div>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-      // ── EmailJS configuration ─────────────────────────────────────────
+      // ── EmailJS konfigurace (pls nespamuj nam requests danke) ─────────────────────────────────────────
       const EMAILJS_PUBLIC_KEY = "4DZFBvDg43eAWNKTh"
       const EMAILJS_SERVICE_ID = "service_vk719pe"
       const EMAILJS_TPL_VERIFY = "template_0395l1e"
@@ -632,6 +648,18 @@
         emailjs.init(EMAILJS_PUBLIC_KEY)
       }
 
+      function toggleMusic() {
+        const a = document.getElementById("bgMusic")
+        const t = document.getElementById("musicToggle")
+        if (a.paused) {
+          a.play()
+          t.textContent = "🔊"
+        } else {
+          a.pause()
+          t.textContent = "🔇"
+        }
+      }
+
       function showToast(msg) {
         const t = document.getElementById("toast")
         t.textContent = msg
@@ -639,7 +667,7 @@
         setTimeout(() => t.classList.remove("show"), 2000)
       }
 
-      // ── Configurator ───────────────────────────────────────────────────
+      // ── Konfigurator ───────────────────────────────────────────────────
       const groups = [
         {
           id: "type",
@@ -744,8 +772,7 @@
           ],
         },
       ]
-
-      // Opraveno sloučením duplicitní deklarace sel
+      
       const sel = { type: "kolobezka", brake: "jula", wheel: "ratata" }
       let riderHeight = 175
 
@@ -812,7 +839,6 @@
       function handleSelect(gid, oid) {
         lastGroup = gid
 
-        // if already selected, deselect
         if (sel[gid] === oid) {
           sel[gid] = null
           renderOptions()
@@ -820,7 +846,6 @@
           return
         }
 
-        // type changed — set defaults for that type
         if (gid === "type") {
           sel.type = oid
           sel.transmission = null
@@ -844,7 +869,6 @@
           return
         }
 
-        // front drive constraint: elisinka requires melinda
         if (gid === "frontDrive" && oid === "elisinka") {
           sel.frontDrive = "elisinka"
           sel.transmission = "melinda"
@@ -852,8 +876,7 @@
           updateAll()
           return
         }
-
-        // transmission changed: if moving away from melinda while elisinka is active, reset front drive
+        
         if (gid === "transmission" && oid !== "melinda" && sel.frontDrive === "elisinka") {
           sel.transmission = oid
           sel.frontDrive = "bez"
@@ -1016,7 +1039,7 @@
         })
       }
 
-      // ── Booking form ──────────────────────────────────────────────────
+      // ── Rezervace  ──────────────────────────────────────────────────
       let verifyCode = null
       let isVerified = false
 
@@ -1125,7 +1148,7 @@
         }
 
         try {
-          // send to admin
+          // Pro admina
           await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_ORDER, {
             email: ADMIN_EMAIL,
             user_name: name,
@@ -1135,7 +1158,7 @@
             html_body: adminHtml(),
           })
 
-          // send confirmation to user
+          // Pro uzivatele
           await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_ORDER, {
             email: email,
             user_name: name,
@@ -1162,10 +1185,9 @@
         }
       })
 
-      // set min date for date input
+      // sorry ze tak pozde bro
       document.getElementById("date").min = "2030-09-01"
 
-      // ── Init ──────────────────────────────────────────────────────────
       renderOptions()
       updateAll()
     </script>
