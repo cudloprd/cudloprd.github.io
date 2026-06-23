@@ -526,10 +526,10 @@
           "
           onclick="toggleMusic()"
           id="musicToggle"
-          >🔇</span
+          >🔇 Zapnout písničku</span
         >
       </p>
-      <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+      <audio id="bgMusic" src="assets/music.mp3" loop preload="auto"></audio>
 
       <div class="config-wrap">
         <div class="left-col">
@@ -653,10 +653,10 @@
         const t = document.getElementById("musicToggle")
         if (a.paused) {
           a.play()
-          t.textContent = "🔊"
+          t.textContent = "🔊 Vypnout zvuk"
         } else {
           a.pause()
-          t.textContent = "🔇"
+          t.textContent = "🔇 Zapnout zvuk"
         }
       }
 
